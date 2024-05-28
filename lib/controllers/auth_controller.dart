@@ -1,5 +1,7 @@
 import 'package:app/providers/auth_provider.dart';
 import 'package:app/providers/data/login.dart';
+import 'package:app/providers/data/user.dart';
+import 'package:app/services/constant_helper.dart';
 import 'package:app/services/route_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,9 +21,7 @@ class AuthController extends GetxController {
   final hasError = false.obs;
   final errorMessage = ''.obs;
 
-  static const apiToken = "apiToken";
-
-  Login? get data => Login();
+  final user = User().obs;
 
   @override
   void onInit() {
@@ -40,7 +40,7 @@ class AuthController extends GetxController {
           saveToken(response.token).then(
             (result) {
               if (result) {
-                Get.toNamed(RouteHelper.homeRoute);
+                Get.offAndToNamed(RouteHelper.homeRoute);
               }
             },
           );
@@ -49,23 +49,41 @@ class AuthController extends GetxController {
     }
   }
 
+  /// Logout
+  Future<void> logout() async {
+    removeToken().then(
+      (value) {
+        Get.offAndToNamed(RouteHelper.authRoute);
+      },
+    );
+  }
+
+  /// Me
+  Future<void> me() async {
+    authProvider.me().then((response) => user.value = response);
+  }
+
+  /// Save token
   Future<bool> saveToken(String? token) async {
     final storage = GetStorage();
-    await storage.write(AuthController.apiToken.toString(), token);
+    await storage.write(ConstantHelper.apiToken, token);
     return true;
   }
 
+  /// Get token
   String? getToken() {
     final storage = GetStorage();
-    debugPrint("Token ${storage.read(AuthController.apiToken.toString())}");
-    return storage.read(AuthController.apiToken.toString());
+    debugPrint("Token ${storage.read(ConstantHelper.apiToken)}");
+    return storage.read(ConstantHelper.apiToken);
   }
 
+  /// Remove token
   Future<void> removeToken() async {
     final storage = GetStorage();
-    await storage.remove(AuthController.apiToken.toString());
+    await storage.remove(ConstantHelper.apiToken);
   }
 
+  /// Check auth status
   bool checkAuthStatus() {
     final token = getToken();
     if (token != null) {

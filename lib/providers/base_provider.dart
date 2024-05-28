@@ -1,6 +1,7 @@
 import 'package:app/controllers/auth_controller.dart';
 import 'package:app/helpers/api_constant.dart';
 import 'package:app/providers/auth_provider.dart';
+import 'package:app/services/constant_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
@@ -22,7 +23,7 @@ class BaseProvider extends GetConnect {
       request.headers['Content-Type'] = 'application/json';
 
       /// Append API token if authenticated
-      String? apiKey = GetStorage().read(AuthController.apiToken);
+      String? apiKey = GetStorage().read(ConstantHelper.apiToken);
       if (apiKey != '') {
         request.headers['Authorization'] = 'Bearer $apiKey';
       }

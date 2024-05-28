@@ -49,14 +49,19 @@ class App extends StatelessWidget {
             themeMode: ThemeMode.system,
             initialRoute: RouteHelper.initialRoute,
             getPages: [
+              // Initial Page
               GetPage(
                 name: RouteHelper.initialRoute,
                 page: () => const InitialPage(),
               ),
+
+              // Login Page
               GetPage(
                 name: RouteHelper.authRoute,
                 page: () => const LoginPage(),
               ),
+
+              // Home Page
               GetPage(
                 name: RouteHelper.homeRoute,
                 page: () => const HomePage(),
