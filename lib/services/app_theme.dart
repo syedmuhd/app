@@ -20,7 +20,7 @@ class AppTheme {
     fontFamily: lightThemeFont,
     switchTheme: SwitchThemeData(
       thumbColor:
-          MaterialStateProperty.resolveWith<Color>((states) => lightThemeColor),
+          WidgetStateProperty.resolveWith<Color>((states) => lightThemeColor),
     ),
     appBarTheme: AppBarTheme(
       centerTitle: true,

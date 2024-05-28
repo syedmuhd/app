@@ -1,18 +1,39 @@
 import 'package:app/pages/home_page.dart';
+import 'package:app/pages/initial_page.dart';
+import 'package:app/pages/login_page.dart';
 import 'package:app/services/app_theme.dart';
+import 'package:app/services/init_service.dart';
+import 'package:app/services/route_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+  //     statusBarColor: Colors.transparent,
+  //     statusBarIconBrightness: Brightness.dark));
+
+  await initializeServices();
+
   runApp(const App());
+}
+
+Future<void> initializeServices() async {
+  debugPrint('starting services ...');
+
+  /**
+   * Dependencies in order
+   */
+  await Get.putAsync(() => InitService().init());
+
+  debugPrint('All services started...');
 }
 
 class App extends StatelessWidget {
   const App({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -26,9 +47,22 @@ class App extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.lightTheme,
             themeMode: ThemeMode.system,
-            home: child,
+            initialRoute: RouteHelper.initialRoute,
+            getPages: [
+              GetPage(
+                name: RouteHelper.initialRoute,
+                page: () => const InitialPage(),
+              ),
+              GetPage(
+                name: RouteHelper.authRoute,
+                page: () => const LoginPage(),
+              ),
+              GetPage(
+                name: RouteHelper.homeRoute,
+                page: () => const HomePage(),
+              )
+            ],
           );
-        },
-        child: const HomePage());
+        });
   }
 }
